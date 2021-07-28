@@ -128,7 +128,7 @@ void	ft_eat_sleep_think(t_philo	*actual)
 	// 	// printf(" asdasda\n");
 	// }
 	// ft_mut_fork(1, actual);
-		if (ft_thinking(actual))
+	if (ft_thinking(actual))
 		return ;
 	pthread_mutex_lock(actual->fork_r);
 	pthread_mutex_lock(actual->fork_l);
@@ -202,7 +202,7 @@ void	*ft_routine(void *arg)
 	// ft_thinking(actual);
 	// ft_mut_fork(0, actual);
 	if (actual->name % 2 == 0)
-		usleep(23);//(actual->data->eat_t - 10);
+		usleep(actual->data->eat_t - 10);
 	// {
 	// 	int x = 0;
 	// 	while (x < 42)

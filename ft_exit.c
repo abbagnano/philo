@@ -26,7 +26,7 @@ long	ft_thinking(t_philo *actual)
 	// gettimeofday(&ms, NULL);
 	// x = ms.tv_sec % 1000 * 1000 + ms.tv_usec / 1000;
 	// x -= actual->last_eat;
-	while (*actual->f_l_stat == 1 /*||*/&& *actual->f_r_stat == 1)
+	while (/**actual->f_l_stat == 1 || &&*/ *actual->f_r_stat == 1)
 	{
 		if (actual->data->die_all == 666)
 			return (666);
