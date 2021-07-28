@@ -26,22 +26,24 @@ long	ft_thinking(t_philo *actual)
 	// gettimeofday(&ms, NULL);
 	// x = ms.tv_sec % 1000 * 1000 + ms.tv_usec / 1000;
 	// x -= actual->last_eat;
-	while (*actual->f_l_stat == 1 && *actual->f_r_stat == 1)
+	while (*actual->f_l_stat == 1 /*||*/&& *actual->f_r_stat == 1)
 	{
+		if (actual->data->die_all == 666)
+			return (666);
 		gettimeofday(&ms, NULL);
 		x = ms.tv_sec % 1000 * 1000 + ms.tv_usec / 1000;
-		x -= actual->last_eat;
-		if (x > actual->data->die_t / 1000)
+		// x -= actual->last_eat;
+		if (x - actual->last_eat > actual->data->die_t / 1000)
 		{
-			pthread_mutex_lock(&actual->data->mut_die);
+			// pthread_mutex_lock(&actual->data->mut_die);
 			actual->data->die_all = 666;
-			printf("%ld %ld died  ++\n", x - actual->data->start, actual->name);
+			printf("%ld %ld died  0++\n", x - actual->data->start, actual->name);
 			return (666);
 		}
 
-	// 	ft_mut_fork(0, actual);
-	// 	ft_mut_fork(1, actual);
-	// 	continue ;
+			// 	ft_mut_fork(0, actual);
+			// 	ft_mut_fork(1, actual);
+			// 	continue ;
 	}
 	// ft_mut_fork(0, actual);
 	return (0);
@@ -63,17 +65,17 @@ long	ft_forking_eating(t_philo	*actual)
 {
 	if (actual->data->die_all == 666)
 		return (666);
-	if (*actual->f_l_stat == 1 || *actual->f_r_stat == 1)
-	{
-		ft_write_num(actual->name);
-		ft_write(1, "\t\tstealing fork...\n");
-		actual->data->die_all = 666;
-		return (666);
-	}
-	*actual->f_l_stat = 1;
+	// if (*actual->f_l_stat == 1 || *actual->f_r_stat == 1)
+	// {
+	// 	ft_write_num(actual->name);
+	// 	ft_write(1, "\t\tstealing fork...\n");
+	// 	actual->data->die_all = 666;
+	// 	return (666);
+	// }
+	*actual->f_r_stat = 1;
 	if (ft_timestamp(0, actual->data, actual, " has taken a fork\n"))
 		return (666);
-	*actual->f_r_stat = 1;
+	*actual->f_l_stat = 1;
 	if (ft_timestamp(0, actual->data, actual, " has taken a fork\n"))
 		return (666);
 	return (ft_timestamp(-1, actual->data, actual, "\033[0;32m is eating\033[0m\n"));

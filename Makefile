@@ -9,7 +9,8 @@ OBJS	=	ft_exit.o \
 all		:	$(NAME)
 
 $(NAME)	:	$(OBJS)
-	gcc $(CFLAGS) $^ -o $@ -pthread
+	gcc $(CFLAGS) $^ -o $@ 
+#-pthread
 
 %.o		:	%.c
 	gcc $(CFLAGS) -c $^

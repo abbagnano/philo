@@ -58,14 +58,15 @@ int	main(int ac, char **av)
 		ft_init_data(av, &data);
 		if (ac == 6)
 			data.eat_n = ft_atoi(av[5]);
-		if (data.phils_n == 1)
-		{
-			ft_timestamp(2, &data, NULL, " is thinking\n");
-			ft_timestamp(2, &data, NULL, " has taken a fork\n");
-			ft_timestamp(2, &data, NULL, " died +++\n");
-			ft_exit("", &data);
-		}
-		ft_start(&data);
+		// if (data.phils_n == 1)
+		// {
+		// 	ft_timestamp(2, &data, NULL, " is thinking\n");
+		// 	ft_timestamp(2, &data, NULL, " has taken a fork\n");
+		// 	ft_timestamp(2, &data, NULL, " died +++\n");
+		// 	ft_exit("", &data);
+		// }
+		if (data.phils_n)
+			ft_start(&data);
 	}
 	ft_exit("", &data);
 }
