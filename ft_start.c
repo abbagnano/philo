@@ -131,13 +131,13 @@ void	ft_eat_sleep_think(t_philo	*actual)
 	if (ft_thinking(actual))
 		return ;
 	pthread_mutex_lock(actual->fork_r);
-	pthread_mutex_lock(actual->fork_l);
 	*actual->f_r_stat = 1;
 	if (ft_timestamp(0, actual->data, actual, " has taken a fork\n"))
 	{
 		pthread_mutex_unlock(actual->fork_r);
 		return ;//(ft_mut_fork(0, actual));//(666);
 	}
+	pthread_mutex_lock(actual->fork_l);
 	*actual->f_l_stat = 1;
 	if (ft_timestamp(0, actual->data, actual, " has taken a fork\n"))
 		return (ft_mut_fork(0, actual));//(666);
