@@ -1,5 +1,5 @@
 NAME	=	philo
-CFLAGS	=	-Wall -Wextra #-Werror
+CFLAGS	=	-Wall -Wextra -Werror
 OBJS	=	ft_exit.o \
 			ft_start.o \
 			philo.o \

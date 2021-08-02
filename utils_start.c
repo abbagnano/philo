@@ -12,59 +12,40 @@
 
 #include "philolib.h"
 
-void	ft_mut_fork(long status, t_philo	*actual)
+int	ft_dead(long x, t_philo *actual, t_data *data)
 {
-	if (status)
+	if (actual && actual->data->die_all == 666)
 	{
-		pthread_mutex_lock(actual->fork_r);
-		pthread_mutex_lock(actual->fork_l);
+		pthread_mutex_unlock(&data->mut_print);
+		return (666);
 	}
-	else if (status == 0)
-	{
-		pthread_mutex_unlock(actual->fork_l);
-		pthread_mutex_unlock(actual->fork_r);
-	}
+	printf("\033[0;31m%ld %ld died  +\033[0m\n", x, actual->name);
+	actual->data->die_all = 666;
+	pthread_mutex_unlock(&data->mut_print);
+	return (666);
 }
 
-long	ft_timestamp(long flag, t_data *data, t_philo *actual, char *str)
+long	ft_timestamp(long flag, t_data *data, t_philo *act, char *str)
 {
 	long			x;
 	struct timeval	ms;
 
 	pthread_mutex_lock(&data->mut_print);
 	gettimeofday(&ms, NULL);
-	if (actual && actual->data->die_all == 666)
-	{
-		pthread_mutex_unlock(&data->mut_print);
-		return (666);
-	}
 	x = ms.tv_sec % 1000 * 1000 + ms.tv_usec / 1000;
-	// ft_write_num((x - data->start));
-	// ft_write(1, " ");
-
-	if (!actual)
+	if (!act)
 	{
 		printf("%ld %ld %s", x - data->start, flag - 1, str);
-		// ft_write_num(flag - 1);
 		return (0);
 	}
-	// else
-		// ft_write_num(actual->name);
-	if (actual && x - actual->last_eat > data->die_t / 1000)
-	{
-		printf("%ld %ld died  + while %s", x - data->start, actual->name, str + 3);
-		// ft_write(1, " \t\t\tdied +\n");
-		actual->data->die_all = 666;
-		pthread_mutex_unlock(&data->mut_print);
-		return (666);
-	}
+	if (x - act->last_eat > data->die_t / 1000 || act->data->die_all == 666)
+		return (ft_dead(x - data->start, act, data));
 	else
-		// ft_write(1, str);
-		printf("%ld %ld %s", x - data->start, actual->name, str);
+		printf("%ld %ld %s", x - data->start, act->name, str);
 	if (flag == -1)
-		actual->last_eat = x;
+		act->last_eat = x;
 	else if (flag == -2)
-		actual->last_sleep = x;
+		act->last_sleep = x;
 	pthread_mutex_unlock(&data->mut_print);
 	return (0);
 }
@@ -82,53 +63,43 @@ void	ft_join_philo(t_philo **philos, t_data *data)
 	}
 }
 
-long	ft_usleep(int flag, t_philo *actual, t_data *data)
+void	ft_flag_usleep(int flag, long *x, t_philo *actual)
 {
-	struct timeval	ms;
-	long			x;
-	long			y;
-	long			z;
-
-	y = 0;
-	gettimeofday(&ms, NULL);
-	x = ms.tv_sec % 1000 * 1000 + ms.tv_usec / 1000;
 	if (flag == -1)
 	{
-		x -= actual->last_eat;
-		y = data->eat_t / 1000;
-		z = x;
+		x[0] -= actual->last_eat;
+		x[1] = actual->data->eat_t / 1000;
+		x[2] = x[0];
 	}
 	else if (flag == -2)
 	{
-		z = x - actual->last_eat;
-		x -= actual->last_sleep;
-		y = data->sleep_t / 1000;
+		x[2] = x[0] - actual->last_eat;
+		x[0] -= actual->last_sleep;
+		x[1] = actual->data->sleep_t / 1000;
 	}
-	while (x < y)
+}
+
+long	ft_usleep(int flag, t_philo *actual, t_data *data)
+{
+	struct timeval	ms;
+	long			x[3];
+
+	x[1] = 0;
+	gettimeofday(&ms, NULL);
+	x[0] = ms.tv_sec % 1000 * 1000 + ms.tv_usec / 1000;
+	ft_flag_usleep(flag, x, actual);
+	while (x[0] < x[1])
 	{
-		// printf("\t%ld\n", y - x);
-		if (flag != -1 && (x > data->die_t / 1000 || z > data->die_t / 1000))
+		if (flag != -1
+			&& (x[0] > data->die_t / 1000 || x[2] > data->die_t / 1000))
 		{
-			// pthread_mutex_lock(&data->mut_die);
-			actual->data->die_all = 666;
-			printf("%ld %ld died  +++\n", z, actual->name);
-			return (666);
+			pthread_mutex_lock(&actual->data->mut_print);
+			return (ft_dead(x[2], actual, data));
 		}
-		usleep(y - x);
+		usleep(x[1] - x[0]);
 		gettimeofday(&ms, NULL);
-		x = ms.tv_sec % 1000 * 1000 + ms.tv_usec / 1000;// - actual->last_eat;
-		if (flag == -1)
-		{
-			x -= actual->last_eat;
-			y = data->eat_t / 1000;
-			z = x;
-		}
-		else if (flag == -2)
-		{
-			z = x - actual->last_eat;
-			x -= actual->last_sleep;
-			y = data->sleep_t / 1000;
-		}
+		x[0] = ms.tv_sec % 1000 * 1000 + ms.tv_usec / 1000;
+		ft_flag_usleep(flag, x, actual);
 	}
 	return (0);
 }

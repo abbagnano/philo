@@ -53,15 +53,19 @@ void	ft_init_array(long *array, long val, long phils_n);
 void	ft_init_data(char **av, t_data *data);
 
 /*		ft_exit.c	*/
+void	ft_mut_fork(long status, t_philo	*actual);
 long	ft_thinking(t_philo *actual);
-long	ft_sleeping(t_philo *actual);
-long	ft_forking_eating(t_philo	*actual);
+void	ft_check_eat(t_data *data, t_philo **philos);
 void	ft_free(long *fork, t_philo **philos,
 			pthread_mutex_t *mut_fork, t_data *data);
 void	ft_exit(char *str, t_data *data);
 
 /*		ft_start.c	*/
-long	ft_timestamp(long flag, t_data *data, t_philo *actual, char *str);
+void	ft_eat_sleep_think(t_philo	*actual);
+void	*ft_alone(t_philo *actual);
+void	*ft_routine(void *arg);
+void	ft_create_philo(t_philo **philos, long *fork,
+			pthread_mutex_t *mut_fork, t_data *data);
 void	ft_start(t_data *data);
 
 /*	utils_basic.c	*/
@@ -72,7 +76,7 @@ long	ft_atoi(char *str);
 void	ft_write_num(long num);
 
 /*	utils_start.c	*/
-void	ft_mut_fork(long status, t_philo	*actual);
+int		ft_dead(long x, t_philo *actual, t_data *data);
 long	ft_timestamp(long flag, t_data *data, t_philo *actual, char *str);
 void	ft_join_philo(t_philo **philos, t_data *data);
 long	ft_usleep(int flag, t_philo *actual, t_data *data);

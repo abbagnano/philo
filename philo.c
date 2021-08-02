@@ -42,7 +42,6 @@ void	ft_init_data(char **av, t_data *data)
 	data->eat_t = ft_atoi(av[3]) * 1000;
 	data->sleep_t = ft_atoi(av[4]) * 1000;
 	data->eat_n = -1;
-
 	data->die_all = 0;
 }
 
@@ -58,13 +57,6 @@ int	main(int ac, char **av)
 		ft_init_data(av, &data);
 		if (ac == 6)
 			data.eat_n = ft_atoi(av[5]);
-		// if (data.phils_n == 1)
-		// {
-		// 	ft_timestamp(2, &data, NULL, " is thinking\n");
-		// 	ft_timestamp(2, &data, NULL, " has taken a fork\n");
-		// 	ft_timestamp(2, &data, NULL, " died +++\n");
-		// 	ft_exit("", &data);
-		// }
 		if (data.phils_n)
 			ft_start(&data);
 	}
